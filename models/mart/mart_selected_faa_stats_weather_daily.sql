@@ -23,8 +23,8 @@ arrivals AS (
         SUM(cancelled) AS arr_cancelled,
         SUM(diverted) AS arr_diverted,
         COUNT(arr_time) AS arr_n_flights
-        --,COUNT(DISTINCT tail_number) AS arr_nunique_tails -- BONUS TASK
-        --,COUNT(DISTINCT airline) AS arr_nunique_airlines -- BONUS TASK
+        ,COUNT(DISTINCT tail_number) AS arr_nunique_tails -- BONUS TASK
+        ,COUNT(DISTINCT airline) AS arr_nunique_airlines -- BONUS TASK
     FROM {{ ref('prep_flights') }}
     WHERE dest IN (SELECT DISTINCT airport_code FROM {{ ref('prep_weather_daily') }})
     GROUP BY dest, flight_date
@@ -40,8 +40,8 @@ total_stats AS (
         d.dep_cancelled + a.arr_cancelled AS total_cancelled,
         d.dep_diverted + a.arr_diverted AS total_diverted,
         d.dep_n_flights + a.arr_n_flights AS total_flights
-        --,((d.dep_nunique_tails + a.arr_nunique_tails)::NUMERIC/2) AS nunique_tails -- BONUS
-        --,((d.dep_nunique_airlines + a.arr_nunique_airlines)::NUMERIC/2) AS nunique_airlines -- BONUS
+        ,((d.dep_nunique_tails + a.arr_nunique_tails)::NUMERIC/2) AS nunique_tails -- BONUS
+        ,((d.dep_nunique_airlines + a.arr_nunique_airlines)::NUMERIC/2) AS nunique_airlines -- BONUS
     FROM departures d
     JOIN arrivals a
         ON d.flight_date = a.flight_date
